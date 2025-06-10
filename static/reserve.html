@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LINE予約フォーム</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>予約フォーム</h2>
+  <form id="reserve-form">
+    <label>日付: <input type="date" id="date" required></label><br>
+    <label>時間: 
+      <select id="time">
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+      </select>
+    </label><br>
+    <label>メニュー: <input type="text" id="menu" required></label><br>
+    <label>メモ: <input type="text" id="note"></label><br><br>
+    <button type="submit">予約する</button>
+  </form>
+
+  <p id="result"></p>
+
+  <script>
+    async function init() {
+      await liff.init({ liffId: "YOUR_LIFF_ID" });
+
+      const profile = await liff.getProfile();
+      const userName = profile.displayName;
+      const userId = profile.userId;
+
+      document.getElementById('reserve-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+          name: userName,
+          lineId: userId,
+          date: document.getElementById('date').value,
+          time: document.getElementById('time').value,
+          menu: document.getElementById('menu').value,
+          note: document.getElementById('note').value
+        };
+
+        const res = await fetch('/reserve', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        document.getElementById('result').innerText = '予約が完了しました！';
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
