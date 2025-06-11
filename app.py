@@ -5,13 +5,13 @@ import os
 import pickle
 from flask import abort
 
+
+app = Flask(__name__)
+
 @app.route('/callback', methods=['POST'])
 def callback():
     # 署名確認など本来は入れるが、まずはレスポンス200を返して通す
     return 'OK', 200
-
-
-app = Flask(__name__)
 
 # スプレッドシート設定
 SPREADSHEET_ID = '19YEhSe-A28MJ7nE6D2xY192BQKywNFAO1Imx3Z5-LkE'
