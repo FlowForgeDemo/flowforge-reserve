@@ -3,6 +3,13 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 import os
 import pickle
+from flask import abort
+
+@app.route('/callback', methods=['POST'])
+def callback():
+    # 署名確認など本来は入れるが、まずはレスポンス200を返して通す
+    return 'OK', 200
+
 
 app = Flask(__name__)
 
