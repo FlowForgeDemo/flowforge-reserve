@@ -4,13 +4,38 @@ from googleapiclient.discovery import build
 import os
 import pickle
 from flask import abort
-
+import json
+import requests
 
 app = Flask(__name__)
 
+CHANNEL_ACCESS_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")  # Renderに環境変数として登録しておく
+
 @app.route('/callback', methods=['POST'])
 def callback():
-    # 署名確認など本来は入れるが、まずはレスポンス200を返して通す
+    body = request.get_data(as_text=True)
+    events = json.loads(body).get("events", [])
+
+    for event in events:
+        if event['type'] == 'message' and event['message']['type'] == 'text':
+            reply_token = event['replyToken']
+            message_text = event['message']['text']
+            reply_message = f"「{message_text}」ですね。ご予約ありがとうございます！"
+
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {CHANNEL_ACCESS_TOKEN}"
+            }
+            payload = {
+                "replyToken": reply_token,
+                "messages": [{
+                    "type": "text",
+                    "text": reply_message
+                }]
+            }
+
+            requests.post("https://api.line.me/v2/bot/message/reply", headers=headers, data=json.dumps(payload))
+
     return 'OK', 200
 
 # スプレッドシート設定
