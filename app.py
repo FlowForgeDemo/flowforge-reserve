@@ -55,6 +55,10 @@ def index():
 def serve_form():
     return send_from_directory('static', 'reserve.html')
 
+@app.route('/privacy')
+def serve_privacy():
+    return send_from_directory('static', 'privacy.html')
+
 @app.route('/reserve', methods=['POST'])
 def reserve():
     data = request.json
