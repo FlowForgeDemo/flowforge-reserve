@@ -1,5 +1,5 @@
 async function init() {
-    await liff.init({ liffId: "あなたのLIFF_ID" });
+    await liff.init({ liffId: "2007560398-Xqmy4D1q" });
   
     const profile = await liff.getProfile();
     const userName = profile.displayName;
