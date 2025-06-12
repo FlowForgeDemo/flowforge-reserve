@@ -5,6 +5,13 @@ async function init() {
     await liff.init({ liffId: "2007560398-Xqmy4D1q" });
     console.log("✅ LIFF初期化成功");
 
+    // ← ここでログインしてないならログイン
+    if (!liff.isLoggedIn()) {
+      console.log("🔐 ログインしていないため、リダイレクトログインします");
+      liff.login();
+      return; // ← login()でリダイレクトされるので処理は一旦止める
+    }
+
     const profile = await liff.getProfile();
     console.log("👤 プロフィール取得成功:", profile);
 
