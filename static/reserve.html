@@ -2,12 +2,13 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>LINE予約フォーム</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <title>予約フォーム（LINEログインなし）</title>
 </head>
 <body>
   <h2>予約フォーム</h2>
   <form id="reserve-form">
+    <label>お名前: <input type="text" id="name" required></label><br>
+    <label>LINE ID（任意）: <input type="text" id="lineId"></label><br>
     <label>日付: <input type="date" id="date" required></label><br>
     <label>時間: 
       <select id="time">
@@ -25,25 +26,19 @@
   <p id="result"></p>
 
   <script>
-    async function init() {
-      await liff.init({ liffId: "YOUR_LIFF_ID" });
+    document.getElementById('reserve-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-      const profile = await liff.getProfile();
-      const userName = profile.displayName;
-      const userId = profile.userId;
+      const data = {
+        name: document.getElementById('name').value,
+        lineId: document.getElementById('lineId').value || "未入力",
+        date: document.getElementById('date').value,
+        time: document.getElementById('time').value,
+        menu: document.getElementById('menu').value,
+        note: document.getElementById('note').value
+      };
 
-      document.getElementById('reserve-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const data = {
-          name: userName,
-          lineId: userId,
-          date: document.getElementById('date').value,
-          time: document.getElementById('time').value,
-          menu: document.getElementById('menu').value,
-          note: document.getElementById('note').value
-        };
-
+      try {
         const res = await fetch('/reserve', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -52,10 +47,11 @@
 
         const result = await res.json();
         document.getElementById('result').innerText = '予約が完了しました！';
-      });
-    }
-
-    init();
+      } catch (error) {
+        console.error('送信エラー:', error);
+        document.getElementById('result').innerText = '予約に失敗しました。';
+      }
+    });
   </script>
 </body>
 </html>
