@@ -2,7 +2,7 @@ async function init() {
   console.log("🚀 LIFF初期化開始");
 
   try {
-    await liff.init({ liffId: "2007560398-Xqmy4D1q" });
+    await liff.init({ liffId: "2007560400-5767wzWP" }); // 本番用LIFF IDに変更
     console.log("✅ LIFF初期化成功");
 
     // ← ここでログインしてないならログイン
