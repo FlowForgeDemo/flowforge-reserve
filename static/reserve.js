@@ -1,13 +1,19 @@
 async function init() {
+  console.log("🚀 LIFF初期化開始");
+
+  try {
     await liff.init({ liffId: "2007560398-Xqmy4D1q" });
-  
+    console.log("✅ LIFF初期化成功");
+
     const profile = await liff.getProfile();
+    console.log("👤 プロフィール取得成功:", profile);
+
     const userName = profile.displayName;
     const userId = profile.userId;
-  
+
     document.getElementById('reserve-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-  
+
       const data = {
         name: userName,
         lineId: userId,
@@ -16,16 +22,29 @@ async function init() {
         menu: document.getElementById('menu').value,
         note: document.getElementById('note').value
       };
-  
-      const res = await fetch('/reserve', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-  
-      const result = await res.json();
-      document.getElementById('result').innerText = '予約が完了しました！';
+
+      console.log("📨 送信データ:", data);
+
+      try {
+        const res = await fetch('/reserve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        console.log("✅ 送信結果:", result);
+        document.getElementById('result').innerText = '予約が完了しました！';
+      } catch (error) {
+        console.error("❌ フェッチエラー:", error);
+        document.getElementById('result').innerText = '送信に失敗しました。';
+      }
     });
+
+  } catch (err) {
+    console.error("❌ LIFF初期化/プロフィール取得エラー:", err);
+    document.getElementById('result').innerText = 'LIFFの初期化に失敗しました。LINEアプリ内で開いてください。';
   }
-  
-  init();
+}
+
+init();
