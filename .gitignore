@@ -5,4 +5,5 @@ __pycache__/
 credentials/*.json
 .env
 .gitignorecredentials/token.pickle
+token.pickle
 credentials/token.pickle
